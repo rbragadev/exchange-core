@@ -41,7 +41,7 @@
     "@nx/node": "22.3.3",
     "@nx/web": "22.3.3",
     "@nx/webpack": "22.3.3",
-    "@swc-node/register": "~1.9.1",
+    "@swc-node/register": "~1.10.9",
     "@swc/core": "~1.5.7",
     "@swc/helpers": "~0.5.11",
     "@swc/jest": "~0.2.38",
@@ -75,6 +75,9 @@
     "typescript-eslint": "^8.40.0",
     "verdaccio": "^6.0.5",
     "webpack-cli": "^5.1.4"
+  },
+  "overrides": {
+    "@swc/core": "~1.5.7"
   },
   "workspaces": [
     "packages/*",

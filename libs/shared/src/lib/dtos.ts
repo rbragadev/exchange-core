@@ -30,7 +30,6 @@ import {
   CopilotSource,
   LeadSource,
 } from './enums.js';
-import { User as PrismaUser } from '@prisma/client';
 
 // Base DTO classes
 export abstract class BaseDto {
@@ -142,59 +141,6 @@ export class UpdateUserDto implements Partial<CreateUserDto> {
   @IsOptional()
   @IsEnum(UserObjective)
   objective?: UserObjective;
-}
-
-export class UserResponseDto implements PrismaUser {
-  @IsUUID()
-  id: string;
-
-  @IsEmail()
-  email: string;
-
-  @IsString()
-  name: string | null;
-
-  @IsString()
-  bio: string | null;
-
-  @IsEnum(['USER', 'ADMIN', 'PARTNER'])
-  role: UserRole | null;
-
-  @IsString()
-  badge: string | null;
-
-  @IsNumber()
-  @Min(0)
-  reputationScore: number | null;
-
-  @IsBoolean()
-  isActive: boolean;
-
-  @IsString()
-  originCountry: string | null;
-
-  @IsString()
-  originCity: string | null;
-
-  @IsString()
-  destinationCity: string | null;
-
-  @IsEnum(['STUDENT', 'WORKER'])
-  status: UserStatus | null;
-
-  @IsEnum(['PRE_ARRIVAL', 'FIRST_30_DAYS', 'SETTLED'])
-  phase: UserPhase | null;
-
-  @IsEnum(['ACCOMMODATION', 'COURSE', 'BOTH'])
-  objective: UserObjective | null;
-
-  @IsDate()
-  @Type(() => Date)
-  createdAt: Date;
-
-  @IsDate()
-  @Type(() => Date)
-  updatedAt: Date;
 }
 
 // Partner DTOs
@@ -663,14 +609,14 @@ export class SearchDto {
   @IsOptional()
   @IsNumber()
   @Min(1)
-  @Transform(({ value }) => parseInt(value))
+  @Transform(({ value }) => Number.parseInt(value))
   page?: number;
 
   @IsOptional()
   @IsNumber()
   @Min(1)
   @Max(100)
-  @Transform(({ value }) => parseInt(value))
+  @Transform(({ value }) => Number.parseInt(value))
   limit?: number;
 }
 
@@ -682,13 +628,13 @@ export class AccommodationSearchDto extends SearchDto {
   @IsOptional()
   @IsNumber()
   @Min(0)
-  @Transform(({ value }) => parseFloat(value))
+  @Transform(({ value }) => Number.parseFloat(value))
   minPrice?: number;
 
   @IsOptional()
   @IsNumber()
   @Min(0)
-  @Transform(({ value }) => parseFloat(value))
+  @Transform(({ value }) => Number.parseFloat(value))
   maxPrice?: number;
 }
 
@@ -708,25 +654,25 @@ export class CourseSearchDto extends SearchDto {
   @IsOptional()
   @IsNumber()
   @Min(1)
-  @Transform(({ value }) => parseInt(value))
+  @Transform(({ value }) => Number.parseInt(value))
   minWeeks?: number;
 
   @IsOptional()
   @IsNumber()
   @Min(1)
-  @Transform(({ value }) => parseInt(value))
+  @Transform(({ value }) => Number.parseInt(value))
   maxWeeks?: number;
 
   @IsOptional()
   @IsNumber()
   @Min(0)
-  @Transform(({ value }) => parseFloat(value))
+  @Transform(({ value }) => Number.parseFloat(value))
   minPrice?: number;
 
   @IsOptional()
   @IsNumber()
   @Min(0)
-  @Transform(({ value }) => parseFloat(value))
+  @Transform(({ value }) => Number.parseFloat(value))
   maxPrice?: number;
 }
 

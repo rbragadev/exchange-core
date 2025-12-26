@@ -1,0 +1,258 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserStatus {
+  STUDENT
+  WORKER
+}
+
+enum UserPhase {
+  PRE_ARRIVAL
+  FIRST_30_DAYS
+  SETTLED
+}
+
+enum UserObjective {
+  ACCOMMODATION
+  COURSE
+  BOTH
+}
+
+enum AccommodationType {
+  HOMESTAY
+  SHARED
+}
+
+enum LeadType {
+  ACCOMMODATION
+  COURSE
+}
+
+enum ReviewTargetType {
+  ACCOMMODATION
+  COURSE
+}
+
+enum PartnerType {
+  SCHOOL
+  HOMESTAY_PROVIDER
+  AGENCY
+}
+
+enum UserRole {
+  USER
+  ADMIN
+  PARTNER
+}
+
+model User {
+  id              String        @id @default(cuid())
+  email           String        @unique
+  name            String?
+  bio             String?
+  role            UserRole?     // Using enum instead of String
+  badge           String?
+  reputationScore Int?          @map("reputation_score")
+  isActive        Boolean       @default(true) @map("is_active")
+
+  // onboarding
+  originCountry    String?      @map("origin_country")
+  originCity       String?      @map("origin_city")
+  destinationCity  String?      @map("destination_city")
+  status           UserStatus?
+  phase            UserPhase?
+  objective        UserObjective?
+
+  // relations
+  reviews         Review[]
+  leads           Lead[]
+  copilotSessions CopilotSession[]
+
+  createdAt       DateTime      @default(now()) @map("created_at")
+  updatedAt       DateTime      @updatedAt @map("updated_at")
+
+  @@map("user")
+}
+
+model Partner {
+  id           String          @id @default(cuid())
+  type         PartnerType
+  name         String
+  contactEmail String?         @map("contact_email")
+  whatsapp     String?
+  website      String?
+  payoutModel  String?         @map("payout_model") // string no MVP
+  isActive     Boolean         @default(true) @map("is_active")
+
+  accommodations Accommodation[]
+  courses        Course[]
+  leads          Lead[]
+
+  createdAt     DateTime       @default(now()) @map("created_at")
+  updatedAt     DateTime       @updatedAt @map("updated_at")
+
+  @@index([type, isActive])
+  @@map("partner")
+}
+
+model Accommodation {
+  id          String            @id @default(cuid())
+  active      Boolean           @default(true)
+
+  type        AccommodationType
+  title       String
+  city        String
+  priceCad    Int               @map("price_cad")
+  currency    String            @default("CAD")
+
+  lat         Float?
+  lng         Float?
+  addressHint String?           @map("address_hint") // não salvar endereço completo no MVP
+  rules       String?
+  description String?
+
+  partnerId   String?           @map("partner_id")
+  partner     Partner?          @relation(fields: [partnerId], references: [id], onDelete: SetNull)
+
+  reviews     Review[]
+  leads       Lead[]
+
+  createdAt   DateTime          @default(now()) @map("created_at")
+  updatedAt   DateTime          @updatedAt @map("updated_at")
+
+  @@index([city, active])
+  @@index([type, active])
+  @@index([priceCad])
+  @@index([partnerId])
+  @@map("accommodation")
+}
+
+model Course {
+  id           String       @id @default(cuid())
+  active       Boolean      @default(true)
+
+  schoolName   String       @map("school_name")
+  programName  String       @map("program_name")
+  programType  String?      @map("program_type")
+  city         String
+
+  weeklyHours  Int?         @map("weekly_hours")
+  durationWeeks Int?        @map("duration_weeks")
+  priceCad     Int?         @map("price_cad")
+  currency     String       @default("CAD")
+  visaType     String?      @map("visa_type")
+  rules        String?
+  description  String?
+
+  partnerId    String?      @map("partner_id")
+  partner      Partner?     @relation(fields: [partnerId], references: [id], onDelete: SetNull)
+
+  reviews      Review[]
+  leads        Lead[]
+
+  createdAt    DateTime     @default(now()) @map("created_at")
+  updatedAt    DateTime     @updatedAt @map("updated_at")
+
+  @@index([city, active])
+  @@index([schoolName])
+  @@index([partnerId])
+  @@map("course")
+}
+
+model Review {
+  id          String           @id @default(cuid())
+  userId      String           @map("user_id")
+  user        User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  targetType  ReviewTargetType @map("target_type")
+
+  accommodationId String?      @map("accommodation_id")
+  accommodation   Accommodation? @relation(fields: [accommodationId], references: [id], onDelete: Cascade)
+
+  courseId     String?         @map("course_id")
+  course       Course?         @relation(fields: [courseId], references: [id], onDelete: Cascade)
+
+  ratingSafety     Int?        @map("rating_safety")
+  ratingLocation   Int?        @map("rating_location")
+  ratingExperience Int?        @map("rating_experience")
+  comment          String?
+
+  createdAt    DateTime        @default(now()) @map("created_at")
+
+  @@index([userId, createdAt])
+  @@index([targetType, createdAt])
+  @@index([accommodationId])
+  @@index([courseId])
+
+  // garante 1 review por user por target (para MVP, sem spam)
+  @@unique([userId, targetType, accommodationId, courseId])
+
+  @@map("review")
+}
+
+model Lead {
+  id          String    @id @default(cuid())
+
+  userId      String?   @map("user_id")
+  user        User?     @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  type        LeadType
+
+  accommodationId String? @map("accommodation_id")
+  accommodation   Accommodation? @relation(fields: [accommodationId], references: [id], onDelete: SetNull)
+
+  courseId     String? @map("course_id")
+  course       Course? @relation(fields: [courseId], references: [id], onDelete: SetNull)
+
+  partnerId    String? @map("partner_id")
+  partner      Partner? @relation(fields: [partnerId], references: [id], onDelete: SetNull)
+
+  name        String
+  email       String
+  message     String?
+  source      String?  // "copilot" | "listing" | "detail"
+  status      String?  // "new" | "sent" | "contacted" | "won" | "lost" (string no MVP)
+
+  createdAt   DateTime  @default(now()) @map("created_at")
+
+  @@index([type, createdAt])
+  @@index([partnerId, createdAt])
+  @@index([userId, createdAt])
+  @@index([accommodationId])
+  @@index([courseId])
+  @@map("lead")
+}
+
+model CopilotSession {
+  id          String    @id @default(cuid())
+
+  userId      String?   @map("user_id")
+  user        User?     @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  question    String
+  response    String
+
+  // recomendações para UI + métricas (Postgres suporta arrays)
+  recommendedAccommodationIds String[] @default([]) @map("recommended_accommodation_ids")
+  recommendedCourseIds        String[] @default([]) @map("recommended_course_ids")
+
+  modelName   String?  @map("model_name")
+  latencyMs   Int?     @map("latency_ms")
+  source      String?  // "home" | "course_detail" etc.
+  confidence  String?  // "low" | "medium" | "high"
+  warnings    String[] @default([])
+
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  @@index([userId, createdAt])
+  @@map("copilot_session")
+}

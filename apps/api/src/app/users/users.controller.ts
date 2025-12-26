@@ -9,7 +9,6 @@ import {
   Delete,
   NotFoundException,
 } from '@nestjs/common';
-import { User } from '@prisma/client';
 import { UsersService } from './users.service';
 import {
   CreateUserDto,
@@ -18,6 +17,7 @@ import {
   PaginatedResponseDto,
   ApiResponse,
 } from '@exchange-core/shared';
+import { User } from '@prisma/client';
 
 @Controller('users')
 export class UsersController {

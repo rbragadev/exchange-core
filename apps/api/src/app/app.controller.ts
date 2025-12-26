@@ -9,14 +9,4 @@ export class AppController {
   getData() {
     return this.appService.getData();
   }
-
-  @Get('users')
-  getUsers() {
-    return this.appService.getUsers();
-  }
-
-  @Post('users')
-  createUser(@Body() createUserDto: { email: string; originCountry?: string }) {
-    return this.appService.createUser(createUserDto);
-  }
 }

@@ -1,6 +1,6 @@
 # @exchange-core/shared
 
-Biblioteca compartilhada contendo tipos, DTOs, enums e utilitários usados em todo o monorepo exchange-core.
+Biblioteca compartilhada contendo tipos, DTOs com validação, enums e utilitários usados em todo o monorepo exchange-core.
 
 ## 📦 Instalação
 
@@ -14,9 +14,41 @@ A biblioteca é instalada automaticamente como dependência interna:
 }
 ```
 
+## 🔧 Dependências
+
+```json
+{
+  "dependencies": {
+    "class-validator": "^0.14.0",
+    "class-transformer": "^0.5.1"
+  }
+}
+```
+
 ## 🚀 Como Usar
 
-### 1. Tipos Base
+### 1. DTOs com Validação (Novidade!)
+
+Os DTOs agora são **classes com validações** usando `class-validator`:
+
+```typescript
+import { CreateUserDto, validate } from '@exchange-core/shared';
+
+// Backend - Validação automática
+@Post()
+async create(@Body() dto: CreateUserDto) {
+  // dto já está validado automaticamente
+}
+
+// Frontend - Validação manual
+const validateForm = async (data) => {
+  const dto = Object.assign(new CreateUserDto(), data);
+  const errors = await validate(dto);
+  return errors.length === 0;
+};
+```
+
+### 2. Tipos Base
 
 ```typescript
 import { User, Accommodation, Course, Partner } from '@exchange-core/shared';
@@ -27,7 +59,7 @@ function processUser(user: User) {
 }
 ```
 
-### 2. Enums
+### 3. Enums
 
 ```typescript
 import {
@@ -43,7 +75,7 @@ import {
 const userStatus = UserStatus.STUDENT;
 ```
 
-### 3. DTOs para API
+### 4. DTOs para API com Validação
 
 ```typescript
 import {

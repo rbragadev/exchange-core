@@ -8,14 +8,4 @@ export class AppService {
   getData(): { message: string } {
     return { message: 'Hello API' };
   }
-
-  async getUsers() {
-    return this.prisma.user.findMany();
-  }
-
-  async createUser(data: { email: string; originCountry?: string }) {
-    return this.prisma.user.create({
-      data,
-    });
-  }
 }

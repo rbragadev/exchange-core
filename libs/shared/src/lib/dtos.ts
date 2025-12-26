@@ -1,4 +1,23 @@
 import {
+  IsEmail,
+  IsOptional,
+  IsString,
+  IsEnum,
+  IsNumber,
+  IsBoolean,
+  IsDate,
+  IsArray,
+  IsUrl,
+  IsUUID,
+  MinLength,
+  MaxLength,
+  Min,
+  Max,
+  IsPositive,
+  ValidateNested,
+} from 'class-validator';
+import { Transform, Type } from 'class-transformer';
+import {
   UserStatus,
   UserPhase,
   UserObjective,
@@ -12,324 +31,1125 @@ import {
   LeadSource,
 } from './enums.js';
 
-// Base DTO interfaces
-export interface BaseDto {
+// Base DTO classes
+export abstract class BaseDto {
+  @IsOptional()
+  @IsUUID()
   id?: string;
 }
 
-export interface TimestampDto {
+export abstract class TimestampDto {
+  @IsOptional()
+  @IsDate()
+  @Type(() => Date)
   createdAt?: Date;
+
+  @IsOptional()
+  @IsDate()
+  @Type(() => Date)
   updatedAt?: Date;
 }
 
 // User DTOs
-export interface CreateUserDto {
+export class CreateUserDto {
+  @IsEmail()
   email: string;
+
+  @IsOptional()
+  @IsString()
+  @MinLength(2)
+  @MaxLength(100)
   name?: string;
+
+  @IsOptional()
+  @IsString()
+  @MaxLength(500)
   bio?: string;
+
+  @IsOptional()
+  @IsEnum(UserRole)
   role?: UserRole;
+
+  @IsOptional()
+  @IsString()
+  @MaxLength(100)
   originCountry?: string;
+
+  @IsOptional()
+  @IsString()
+  @MaxLength(100)
   originCity?: string;
+
+  @IsOptional()
+  @IsString()
+  @MaxLength(100)
   destinationCity?: string;
+
+  @IsOptional()
+  @IsEnum(UserStatus)
   status?: UserStatus;
+
+  @IsOptional()
+  @IsEnum(UserPhase)
   phase?: UserPhase;
+
+  @IsOptional()
+  @IsEnum(UserObjective)
   objective?: UserObjective;
 }
 
-export interface UpdateUserDto {
+export class UpdateUserDto {
+  @IsOptional()
+  @IsString()
+  @MinLength(2)
+  @MaxLength(100)
   name?: string;
+
+  @IsOptional()
+  @IsString()
+  @MaxLength(500)
   bio?: string;
+
+  @IsOptional()
+  @IsString()
+  @MaxLength(100)
   badge?: string;
+
+  @IsOptional()
+  @IsString()
+  @MaxLength(100)
   originCountry?: string;
+
+  @IsOptional()
+  @IsString()
+  @MaxLength(100)
   originCity?: string;
+
+  @IsOptional()
+  @IsString()
+  @MaxLength(100)
   destinationCity?: string;
+
+  @IsOptional()
+  @IsEnum(UserStatus)
   status?: UserStatus;
+
+  @IsOptional()
+  @IsEnum(UserPhase)
   phase?: UserPhase;
+
+  @IsOptional()
+  @IsEnum(UserObjective)
   objective?: UserObjective;
 }
 
-export interface UserResponseDto extends BaseDto, TimestampDto {
+export class UserResponseDto extends BaseDto {
+  @IsEmail()
   email: string;
+
+  @IsOptional()
+  @IsString()
   name?: string;
+
+  @IsOptional()
+  @IsString()
   bio?: string;
+
+  @IsOptional()
+  @IsEnum(UserRole)
   role?: UserRole;
+
+  @IsOptional()
+  @IsString()
   badge?: string;
+
+  @IsOptional()
+  @IsNumber()
+  @Min(0)
   reputationScore?: number;
+
+  @IsBoolean()
   isActive: boolean;
+
+  @IsOptional()
+  @IsString()
   originCountry?: string;
+
+  @IsOptional()
+  @IsString()
   originCity?: string;
+
+  @IsOptional()
+  @IsString()
   destinationCity?: string;
+
+  @IsOptional()
+  @IsEnum(UserStatus)
   status?: UserStatus;
+
+  @IsOptional()
+  @IsEnum(UserPhase)
   phase?: UserPhase;
+
+  @IsOptional()
+  @IsEnum(UserObjective)
   objective?: UserObjective;
+
+  @IsOptional()
+  @IsDate()
+  @Type(() => Date)
+  createdAt?: Date;
+
+  @IsOptional()
+  @IsDate()
+  @Type(() => Date)
+  updatedAt?: Date;
 }
 
 // Partner DTOs
-export interface CreatePartnerDto {
+export class CreatePartnerDto {
+  @IsEnum(PartnerType)
   type: PartnerType;
+
+  @IsString()
+  @MinLength(2)
+  @MaxLength(200)
   name: string;
+
+  @IsOptional()
+  @IsEmail()
   contactEmail?: string;
+
+  @IsOptional()
+  @IsString()
+  @MaxLength(20)
   whatsapp?: string;
+
+  @IsOptional()
+  @IsUrl()
   website?: string;
+
+  @IsOptional()
+  @IsString()
+  @MaxLength(200)
   payoutModel?: string;
 }
 
-export interface UpdatePartnerDto {
+export class UpdatePartnerDto {
+  @IsOptional()
+  @IsString()
+  @MinLength(2)
+  @MaxLength(200)
   name?: string;
+
+  @IsOptional()
+  @IsEmail()
   contactEmail?: string;
+
+  @IsOptional()
+  @IsString()
+  @MaxLength(20)
   whatsapp?: string;
+
+  @IsOptional()
+  @IsUrl()
   website?: string;
+
+  @IsOptional()
+  @IsString()
+  @MaxLength(200)
   payoutModel?: string;
+
+  @IsOptional()
+  @IsBoolean()
   isActive?: boolean;
 }
 
-export interface PartnerResponseDto extends BaseDto, TimestampDto {
+export class PartnerResponseDto extends BaseDto {
+  @IsEnum(PartnerType)
   type: PartnerType;
+
+  @IsString()
   name: string;
+
+  @IsOptional()
+  @IsEmail()
   contactEmail?: string;
+
+  @IsOptional()
+  @IsString()
   whatsapp?: string;
+
+  @IsOptional()
+  @IsUrl()
   website?: string;
+
+  @IsOptional()
+  @IsString()
   payoutModel?: string;
+
+  @IsBoolean()
   isActive: boolean;
+
+  @IsOptional()
+  @IsDate()
+  @Type(() => Date)
+  createdAt?: Date;
+
+  @IsOptional()
+  @IsDate()
+  @Type(() => Date)
+  updatedAt?: Date;
 }
 
 // Accommodation DTOs
-export interface CreateAccommodationDto {
+export class CreateAccommodationDto {
+  @IsEnum(AccommodationType)
   type: AccommodationType;
+
+  @IsString()
+  @MinLength(5)
+  @MaxLength(200)
   title: string;
+
+  @IsString()
+  @MinLength(2)
+  @MaxLength(100)
   city: string;
+
+  @IsNumber()
+  @IsPositive()
   priceCad: number;
+
+  @IsOptional()
+  @IsString()
+  @MaxLength(10)
   currency?: string;
+
+  @IsOptional()
+  @IsNumber()
+  @Min(-90)
+  @Max(90)
   lat?: number;
+
+  @IsOptional()
+  @IsNumber()
+  @Min(-180)
+  @Max(180)
   lng?: number;
+
+  @IsOptional()
+  @IsString()
+  @MaxLength(300)
   addressHint?: string;
+
+  @IsOptional()
+  @IsString()
+  @MaxLength(1000)
   rules?: string;
+
+  @IsOptional()
+  @IsString()
+  @MaxLength(2000)
   description?: string;
+
+  @IsOptional()
+  @IsUUID()
   partnerId?: string;
 }
 
-export interface UpdateAccommodationDto {
+export class UpdateAccommodationDto {
+  @IsOptional()
+  @IsString()
+  @MinLength(5)
+  @MaxLength(200)
   title?: string;
+
+  @IsOptional()
+  @IsString()
+  @MinLength(2)
+  @MaxLength(100)
   city?: string;
+
+  @IsOptional()
+  @IsNumber()
+  @IsPositive()
   priceCad?: number;
+
+  @IsOptional()
+  @IsString()
+  @MaxLength(10)
   currency?: string;
+
+  @IsOptional()
+  @IsNumber()
+  @Min(-90)
+  @Max(90)
   lat?: number;
+
+  @IsOptional()
+  @IsNumber()
+  @Min(-180)
+  @Max(180)
   lng?: number;
+
+  @IsOptional()
+  @IsString()
+  @MaxLength(300)
   addressHint?: string;
+
+  @IsOptional()
+  @IsString()
+  @MaxLength(1000)
   rules?: string;
+
+  @IsOptional()
+  @IsString()
+  @MaxLength(2000)
   description?: string;
+
+  @IsOptional()
+  @IsBoolean()
   active?: boolean;
+
+  @IsOptional()
+  @IsUUID()
   partnerId?: string;
 }
 
-export interface AccommodationResponseDto extends BaseDto, TimestampDto {
+export class AccommodationResponseDto extends BaseDto {
+  @IsBoolean()
   active: boolean;
+
+  @IsEnum(AccommodationType)
   type: AccommodationType;
+
+  @IsString()
   title: string;
+
+  @IsString()
   city: string;
+
+  @IsNumber()
   priceCad: number;
+
+  @IsString()
   currency: string;
+
+  @IsOptional()
+  @IsNumber()
   lat?: number;
+
+  @IsOptional()
+  @IsNumber()
   lng?: number;
+
+  @IsOptional()
+  @IsString()
   addressHint?: string;
+
+  @IsOptional()
+  @IsString()
   rules?: string;
+
+  @IsOptional()
+  @IsString()
   description?: string;
+
+  @IsOptional()
+  @IsUUID()
   partnerId?: string;
+
+  @IsOptional()
+  @ValidateNested()
+  @Type(() => PartnerResponseDto)
   partner?: PartnerResponseDto;
+
+  @IsOptional()
+  @IsNumber()
+  @Min(0)
   reviewsCount?: number;
+
+  @IsOptional()
+  @IsNumber()
+  @Min(0)
+  @Max(5)
   averageRating?: number;
+
+  @IsOptional()
+  @IsDate()
+  @Type(() => Date)
+  createdAt?: Date;
+
+  @IsOptional()
+  @IsDate()
+  @Type(() => Date)
+  updatedAt?: Date;
 }
 
 // Course DTOs
-export interface CreateCourseDto {
+export class CreateCourseDto {
+  @IsString()
+  @MinLength(2)
+  @MaxLength(200)
   schoolName: string;
+
+  @IsString()
+  @MinLength(2)
+  @MaxLength(200)
   programName: string;
+
+  @IsOptional()
+  @IsString()
+  @MaxLength(100)
   programType?: string;
+
+  @IsString()
+  @MinLength(2)
+  @MaxLength(100)
   city: string;
+
+  @IsOptional()
+  @IsNumber()
+  @Min(1)
+  @Max(168)
   weeklyHours?: number;
+
+  @IsOptional()
+  @IsNumber()
+  @Min(1)
+  @Max(520)
   durationWeeks?: number;
+
+  @IsOptional()
+  @IsNumber()
+  @IsPositive()
   priceCad?: number;
+
+  @IsOptional()
+  @IsString()
+  @MaxLength(10)
   currency?: string;
+
+  @IsOptional()
+  @IsString()
+  @MaxLength(50)
   visaType?: string;
+
+  @IsOptional()
+  @IsString()
+  @MaxLength(1000)
   rules?: string;
+
+  @IsOptional()
+  @IsString()
+  @MaxLength(2000)
   description?: string;
+
+  @IsOptional()
+  @IsUUID()
   partnerId?: string;
 }
 
-export interface UpdateCourseDto {
+export class UpdateCourseDto {
+  @IsOptional()
+  @IsString()
+  @MinLength(2)
+  @MaxLength(200)
   schoolName?: string;
+
+  @IsOptional()
+  @IsString()
+  @MinLength(2)
+  @MaxLength(200)
   programName?: string;
+
+  @IsOptional()
+  @IsString()
+  @MaxLength(100)
   programType?: string;
+
+  @IsOptional()
+  @IsString()
+  @MinLength(2)
+  @MaxLength(100)
   city?: string;
+
+  @IsOptional()
+  @IsNumber()
+  @Min(1)
+  @Max(168)
   weeklyHours?: number;
+
+  @IsOptional()
+  @IsNumber()
+  @Min(1)
+  @Max(520)
   durationWeeks?: number;
+
+  @IsOptional()
+  @IsNumber()
+  @IsPositive()
   priceCad?: number;
+
+  @IsOptional()
+  @IsString()
+  @MaxLength(10)
   currency?: string;
+
+  @IsOptional()
+  @IsString()
+  @MaxLength(50)
   visaType?: string;
+
+  @IsOptional()
+  @IsString()
+  @MaxLength(1000)
   rules?: string;
+
+  @IsOptional()
+  @IsString()
+  @MaxLength(2000)
   description?: string;
+
+  @IsOptional()
+  @IsBoolean()
   active?: boolean;
+
+  @IsOptional()
+  @IsUUID()
   partnerId?: string;
 }
 
-export interface CourseResponseDto extends BaseDto, TimestampDto {
+export class CourseResponseDto extends BaseDto {
+  @IsBoolean()
   active: boolean;
+
+  @IsString()
   schoolName: string;
+
+  @IsString()
   programName: string;
+
+  @IsOptional()
+  @IsString()
   programType?: string;
+
+  @IsString()
   city: string;
+
+  @IsOptional()
+  @IsNumber()
   weeklyHours?: number;
+
+  @IsOptional()
+  @IsNumber()
   durationWeeks?: number;
+
+  @IsOptional()
+  @IsNumber()
   priceCad?: number;
+
+  @IsString()
   currency: string;
+
+  @IsOptional()
+  @IsString()
   visaType?: string;
+
+  @IsOptional()
+  @IsString()
   rules?: string;
+
+  @IsOptional()
+  @IsString()
   description?: string;
+
+  @IsOptional()
+  @IsUUID()
   partnerId?: string;
+
+  @IsOptional()
+  @ValidateNested()
+  @Type(() => PartnerResponseDto)
   partner?: PartnerResponseDto;
+
+  @IsOptional()
+  @IsNumber()
+  @Min(0)
   reviewsCount?: number;
+
+  @IsOptional()
+  @IsNumber()
+  @Min(0)
+  @Max(5)
   averageRating?: number;
+
+  @IsOptional()
+  @IsDate()
+  @Type(() => Date)
+  createdAt?: Date;
+
+  @IsOptional()
+  @IsDate()
+  @Type(() => Date)
+  updatedAt?: Date;
 }
 
 // Review DTOs
-export interface CreateReviewDto {
+export class CreateReviewDto {
+  @IsUUID()
   userId: string;
+
+  @IsEnum(ReviewTargetType)
   targetType: ReviewTargetType;
+
+  @IsOptional()
+  @IsUUID()
   accommodationId?: string;
+
+  @IsOptional()
+  @IsUUID()
   courseId?: string;
+
+  @IsOptional()
+  @IsNumber()
+  @Min(1)
+  @Max(5)
   ratingSafety?: number;
+
+  @IsOptional()
+  @IsNumber()
+  @Min(1)
+  @Max(5)
   ratingLocation?: number;
+
+  @IsOptional()
+  @IsNumber()
+  @Min(1)
+  @Max(5)
   ratingExperience?: number;
+
+  @IsOptional()
+  @IsString()
+  @MaxLength(1000)
   comment?: string;
 }
 
-export interface ReviewResponseDto extends BaseDto {
+export class ReviewResponseDto extends BaseDto {
+  @IsUUID()
   userId: string;
+
+  @IsOptional()
+  @ValidateNested()
+  @Type(() => UserResponseDto)
   user?: UserResponseDto;
+
+  @IsEnum(ReviewTargetType)
   targetType: ReviewTargetType;
+
+  @IsOptional()
+  @IsUUID()
   accommodationId?: string;
+
+  @IsOptional()
+  @IsUUID()
   courseId?: string;
+
+  @IsOptional()
+  @IsNumber()
   ratingSafety?: number;
+
+  @IsOptional()
+  @IsNumber()
   ratingLocation?: number;
+
+  @IsOptional()
+  @IsNumber()
   ratingExperience?: number;
+
+  @IsOptional()
+  @IsString()
   comment?: string;
+
+  @IsDate()
+  @Type(() => Date)
   createdAt: Date;
 }
 
 // Lead DTOs
-export interface CreateLeadDto {
+export class CreateLeadDto {
+  @IsOptional()
+  @IsUUID()
   userId?: string;
+
+  @IsEnum(LeadType)
   type: LeadType;
+
+  @IsOptional()
+  @IsUUID()
   accommodationId?: string;
+
+  @IsOptional()
+  @IsUUID()
   courseId?: string;
+
+  @IsOptional()
+  @IsUUID()
   partnerId?: string;
+
+  @IsString()
+  @MinLength(2)
+  @MaxLength(100)
   name: string;
+
+  @IsEmail()
   email: string;
+
+  @IsOptional()
+  @IsString()
+  @MaxLength(1000)
   message?: string;
+
+  @IsOptional()
+  @IsEnum(LeadSource)
   source?: LeadSource;
 }
 
-export interface UpdateLeadDto {
+export class UpdateLeadDto {
+  @IsOptional()
+  @IsEnum(LeadStatus)
   status?: LeadStatus;
+
+  @IsOptional()
+  @IsString()
+  @MaxLength(1000)
   message?: string;
 }
 
-export interface LeadResponseDto extends BaseDto {
+export class LeadResponseDto extends BaseDto {
+  @IsOptional()
+  @IsUUID()
   userId?: string;
+
+  @IsEnum(LeadType)
   type: LeadType;
+
+  @IsOptional()
+  @IsUUID()
   accommodationId?: string;
+
+  @IsOptional()
+  @IsUUID()
   courseId?: string;
+
+  @IsOptional()
+  @IsUUID()
   partnerId?: string;
+
+  @IsString()
   name: string;
+
+  @IsEmail()
   email: string;
+
+  @IsOptional()
+  @IsString()
   message?: string;
+
+  @IsOptional()
+  @IsEnum(LeadSource)
   source?: LeadSource;
+
+  @IsOptional()
+  @IsEnum(LeadStatus)
   status?: LeadStatus;
+
+  @IsDate()
+  @Type(() => Date)
   createdAt: Date;
 }
 
 // Copilot DTOs
-export interface CreateCopilotSessionDto {
+export class CreateCopilotSessionDto {
+  @IsOptional()
+  @IsUUID()
   userId?: string;
+
+  @IsString()
+  @MinLength(5)
+  @MaxLength(2000)
   question: string;
+
+  @IsString()
+  @MinLength(10)
+  @MaxLength(5000)
   response: string;
+
+  @IsOptional()
+  @IsArray()
+  @IsUUID(4, { each: true })
   recommendedAccommodationIds?: string[];
+
+  @IsOptional()
+  @IsArray()
+  @IsUUID(4, { each: true })
   recommendedCourseIds?: string[];
+
+  @IsOptional()
+  @IsString()
+  @MaxLength(100)
   modelName?: string;
+
+  @IsOptional()
+  @IsNumber()
+  @Min(0)
   latencyMs?: number;
+
+  @IsOptional()
+  @IsEnum(CopilotSource)
   source?: CopilotSource;
+
+  @IsOptional()
+  @IsString()
+  @MaxLength(50)
   confidence?: string;
+
+  @IsOptional()
+  @IsArray()
+  @IsString({ each: true })
   warnings?: string[];
 }
 
-export interface CopilotSessionResponseDto extends BaseDto {
+export class CopilotSessionResponseDto extends BaseDto {
+  @IsOptional()
+  @IsUUID()
   userId?: string;
+
+  @IsString()
   question: string;
+
+  @IsString()
   response: string;
+
+  @IsArray()
+  @IsUUID(4, { each: true })
   recommendedAccommodationIds: string[];
+
+  @IsArray()
+  @IsUUID(4, { each: true })
   recommendedCourseIds: string[];
+
+  @IsOptional()
+  @IsString()
   modelName?: string;
+
+  @IsOptional()
+  @IsNumber()
   latencyMs?: number;
+
+  @IsOptional()
+  @IsEnum(CopilotSource)
   source?: CopilotSource;
+
+  @IsOptional()
+  @IsString()
   confidence?: string;
+
+  @IsArray()
+  @IsString({ each: true })
   warnings: string[];
+
+  @IsDate()
+  @Type(() => Date)
   createdAt: Date;
 }
 
 // Search DTOs
-export interface SearchDto {
+export class SearchDto {
+  @IsOptional()
+  @IsString()
+  @MinLength(1)
+  @MaxLength(200)
   query?: string;
+
+  @IsOptional()
+  @IsString()
+  @MinLength(1)
+  @MaxLength(100)
   city?: string;
+
+  @IsOptional()
+  @IsNumber()
+  @Min(1)
+  @Transform(({ value }) => parseInt(value))
   page?: number;
+
+  @IsOptional()
+  @IsNumber()
+  @Min(1)
+  @Max(100)
+  @Transform(({ value }) => parseInt(value))
   limit?: number;
 }
 
-export interface AccommodationSearchDto extends SearchDto {
+export class AccommodationSearchDto extends SearchDto {
+  @IsOptional()
+  @IsEnum(AccommodationType)
   type?: AccommodationType;
+
+  @IsOptional()
+  @IsNumber()
+  @Min(0)
+  @Transform(({ value }) => parseFloat(value))
   minPrice?: number;
+
+  @IsOptional()
+  @IsNumber()
+  @Min(0)
+  @Transform(({ value }) => parseFloat(value))
   maxPrice?: number;
 }
 
-export interface CourseSearchDto extends SearchDto {
+export class CourseSearchDto extends SearchDto {
+  @IsOptional()
+  @IsString()
+  @MinLength(1)
+  @MaxLength(200)
   schoolName?: string;
+
+  @IsOptional()
+  @IsString()
+  @MinLength(1)
+  @MaxLength(100)
   programType?: string;
+
+  @IsOptional()
+  @IsNumber()
+  @Min(1)
+  @Transform(({ value }) => parseInt(value))
   minWeeks?: number;
+
+  @IsOptional()
+  @IsNumber()
+  @Min(1)
+  @Transform(({ value }) => parseInt(value))
   maxWeeks?: number;
+
+  @IsOptional()
+  @IsNumber()
+  @Min(0)
+  @Transform(({ value }) => parseFloat(value))
   minPrice?: number;
+
+  @IsOptional()
+  @IsNumber()
+  @Min(0)
+  @Transform(({ value }) => parseFloat(value))
   maxPrice?: number;
 }
 
 // Auth DTOs
-export interface LoginDto {
+export class LoginDto {
+  @IsEmail()
   email: string;
+
+  @IsString()
+  @MinLength(6)
+  @MaxLength(128)
   password: string;
 }
 
-export interface RegisterDto {
+export class RegisterDto {
+  @IsEmail()
   email: string;
+
+  @IsString()
+  @MinLength(6)
+  @MaxLength(128)
   password: string;
+
+  @IsOptional()
+  @IsString()
+  @MinLength(2)
+  @MaxLength(100)
   name?: string;
+
+  @IsOptional()
+  @IsString()
+  @MaxLength(100)
   originCountry?: string;
+
+  @IsOptional()
+  @IsString()
+  @MaxLength(100)
   destinationCity?: string;
+
+  @IsOptional()
+  @IsEnum(UserStatus)
   status?: UserStatus;
+
+  @IsOptional()
+  @IsEnum(UserObjective)
   objective?: UserObjective;
 }
 
-export interface AuthResponseDto {
+export class AuthResponseDto {
+  @ValidateNested()
+  @Type(() => UserResponseDto)
   user: UserResponseDto;
+
+  @IsString()
   accessToken: string;
+
+  @IsOptional()
+  @IsString()
   refreshToken?: string;
 }
 
 // Pagination DTOs
-export interface PaginationDto {
+export class PaginationDto {
+  @IsNumber()
+  @Min(1)
   page: number;
+
+  @IsNumber()
+  @Min(1)
+  @Max(100)
   limit: number;
+
+  @IsNumber()
+  @Min(0)
   total: number;
+
+  @IsNumber()
+  @Min(1)
   totalPages: number;
 }
 
-export interface PaginatedResponseDto<T> {
+export class PaginatedResponseDto<T> {
+  @IsArray()
   data: T[];
+
+  @ValidateNested()
+  @Type(() => PaginationDto)
   pagination: PaginationDto;
+}
+
+// API Response DTO
+export class ApiResponse<T> {
+  @IsBoolean()
+  success: boolean;
+
+  @IsOptional()
+  data?: T;
+
+  @IsOptional()
+  @IsString()
+  message?: string;
+
+  @IsOptional()
+  @IsArray()
+  @IsString({ each: true })
+  errors?: string[];
 }

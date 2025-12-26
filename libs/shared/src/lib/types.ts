@@ -163,13 +163,6 @@ export interface PaginatedResponse<T> {
   totalPages: number;
 }
 
-export interface ApiResponse<T> {
-  success: boolean;
-  data?: T;
-  error?: string;
-  message?: string;
-}
-
 // Search and filter types
 export interface SearchFilters {
   city?: string;

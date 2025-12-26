@@ -1,9 +1,9 @@
 import { Controller, Get, Post, Body, Param, Query } from '@nestjs/common';
-import { UserStatus, UserObjective } from '@exchange-core/shared';
-import type {
+import {
+  UserStatus,
+  UserObjective,
   UserResponseDto,
   CreateUserDto,
-  AccommodationResponseDto,
   AccommodationSearchDto,
   PaginatedResponseDto,
   ApiResponse,

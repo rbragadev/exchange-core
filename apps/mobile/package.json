@@ -9,6 +9,7 @@
     "name": "mobile"
   },
   "dependencies": {
+    "@exchange-core/shared": "*",
     "@expo/metro-config": "*",
     "@testing-library/react-native": "*",
     "expo": "*",

@@ -4,12 +4,82 @@
 
 ✨ Your new, shiny [Nx workspace](https://nx.dev) is almost ready ✨.
 
-[Learn more about this workspace setup and its capabilities](https://nx.dev/nx-api/js?utm_source=nx_project&amp;utm_medium=readme&amp;utm_campaign=nx_projects) or run `npx nx graph` to visually explore what was created. Now, let's get you up to speed!
+[Learn more about this workspace setup and its capabilities](https://nx.dev/nx-api/js?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) or run `npx nx graph` to visually explore what was created. Now, let's get you up to speed!
+
+## 🚀 Quick Start
+
+### Prerequisites
+
+- Docker and Docker Compose
+- Node.js 18+
+- npm/yarn
+
+### Setup Database
+
+1. **Start PostgreSQL database:**
+
+```bash
+docker compose up -d
+```
+
+2. **Install dependencies:**
+
+```bash
+npm install
+```
+
+3. **Generate Prisma client:**
+
+```bash
+npx prisma generate --schema=./apps/api/prisma/schema.prisma
+```
+
+4. **Run initial migration:**
+
+```bash
+npx prisma migrate dev --name init_user --schema=./apps/api/prisma/schema.prisma
+```
+
+### Development
+
+1. **Start API server:**
+
+```bash
+npx nx serve api
+```
+
+2. **Open Prisma Studio (database GUI):**
+
+```bash
+npx prisma studio --schema=./apps/api/prisma/schema.prisma
+```
+
+3. **Access services:**
+   - API: http://localhost:3000/api
+   - Prisma Studio: http://localhost:5555
+   - PgAdmin: http://localhost:8888
+     - Email: admin@exchange-core.com
+     - Password: admin123
+
+### Database Commands
+
+```bash
+# Reset database (development only)
+npx prisma migrate reset --schema=./apps/api/prisma/schema.prisma
+
+# Apply pending migrations
+npx prisma migrate deploy --schema=./apps/api/prisma/schema.prisma
+
+# Create new migration
+npx prisma migrate dev --name migration_name --schema=./apps/api/prisma/schema.prisma
+
+# Format schema file
+npx prisma format --schema=./apps/api/prisma/schema.prisma
+```
 
 ## Finish your CI setup
 
 [Click here to finish setting up your workspace!](https://cloud.nx.app/connect/YAwBStxPVa)
-
 
 ## Generate a library
 
@@ -65,7 +135,6 @@ npx nx sync:check
 
 [Learn more about nx sync](https://nx.dev/reference/nx-commands#sync)
 
-
 [Learn more about Nx on CI](https://nx.dev/ci/intro/ci-with-nx#ready-get-started-with-your-provider?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
 
 ## Install Nx Console
@@ -78,12 +147,13 @@ Nx Console is an editor extension that enriches your developer experience. It le
 
 Learn more:
 
-- [Learn more about this workspace setup](https://nx.dev/nx-api/js?utm_source=nx_project&amp;utm_medium=readme&amp;utm_campaign=nx_projects)
+- [Learn more about this workspace setup](https://nx.dev/nx-api/js?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
 - [Learn about Nx on CI](https://nx.dev/ci/intro/ci-with-nx?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
 - [Releasing Packages with Nx release](https://nx.dev/features/manage-releases?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
 - [What are Nx plugins?](https://nx.dev/concepts/nx-plugins?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
 
 And join the Nx community:
+
 - [Discord](https://go.nx.dev/community)
 - [Follow us on X](https://twitter.com/nxdevtools) or [LinkedIn](https://www.linkedin.com/company/nrwl)
 - [Our Youtube channel](https://www.youtube.com/@nxdevtools)

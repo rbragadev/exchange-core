@@ -5,7 +5,7 @@ import {
   CreateUserDto,
   UpdateUserDto,
   PaginatedResponseDto,
-  AccommodationSearchDto,
+  SearchDto,
 } from '@exchange-core/shared';
 
 @Injectable()
@@ -18,9 +18,7 @@ export class UsersService {
     });
   }
 
-  async findAll(
-    searchDto: AccommodationSearchDto,
-  ): Promise<PaginatedResponseDto<User>> {
+  async findAll(searchDto: SearchDto): Promise<PaginatedResponseDto<User>> {
     const page = searchDto.page || 1;
     const limit = searchDto.limit || 20;
     const skip = (page - 1) * limit;

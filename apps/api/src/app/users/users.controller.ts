@@ -13,7 +13,7 @@ import { UsersService } from './users.service';
 import {
   CreateUserDto,
   UpdateUserDto,
-  AccommodationSearchDto,
+  SearchDto,
   PaginatedResponseDto,
   ApiResponse,
 } from '@exchange-core/shared';
@@ -36,7 +36,7 @@ export class UsersController {
 
   @Get()
   async findAll(
-    @Query() searchDto: AccommodationSearchDto,
+    @Query() searchDto: SearchDto,
   ): Promise<PaginatedResponseDto<User>> {
     return this.usersService.findAll(searchDto);
   }

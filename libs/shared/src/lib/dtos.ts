@@ -30,6 +30,7 @@ import {
   CopilotSource,
   LeadSource,
 } from './enums.js';
+import { User as PrismaUser } from '@prisma/client';
 
 // Base DTO classes
 export abstract class BaseDto {
@@ -98,7 +99,7 @@ export class CreateUserDto {
   objective?: UserObjective;
 }
 
-export class UpdateUserDto {
+export class UpdateUserDto implements Partial<CreateUserDto> {
   @IsOptional()
   @IsString()
   @MinLength(2)
@@ -143,67 +144,57 @@ export class UpdateUserDto {
   objective?: UserObjective;
 }
 
-export class UserResponseDto extends BaseDto {
+export class UserResponseDto implements PrismaUser {
+  @IsUUID()
+  id: string;
+
   @IsEmail()
   email: string;
 
-  @IsOptional()
   @IsString()
-  name?: string;
+  name: string | null;
 
-  @IsOptional()
   @IsString()
-  bio?: string;
+  bio: string | null;
 
-  @IsOptional()
-  @IsEnum(UserRole)
-  role?: UserRole;
+  @IsEnum(['USER', 'ADMIN', 'PARTNER'])
+  role: UserRole | null;
 
-  @IsOptional()
   @IsString()
-  badge?: string;
+  badge: string | null;
 
-  @IsOptional()
   @IsNumber()
   @Min(0)
-  reputationScore?: number;
+  reputationScore: number | null;
 
   @IsBoolean()
   isActive: boolean;
 
-  @IsOptional()
   @IsString()
-  originCountry?: string;
+  originCountry: string | null;
 
-  @IsOptional()
   @IsString()
-  originCity?: string;
+  originCity: string | null;
 
-  @IsOptional()
   @IsString()
-  destinationCity?: string;
+  destinationCity: string | null;
 
-  @IsOptional()
-  @IsEnum(UserStatus)
-  status?: UserStatus;
+  @IsEnum(['STUDENT', 'WORKER'])
+  status: UserStatus | null;
 
-  @IsOptional()
-  @IsEnum(UserPhase)
-  phase?: UserPhase;
+  @IsEnum(['PRE_ARRIVAL', 'FIRST_30_DAYS', 'SETTLED'])
+  phase: UserPhase | null;
 
-  @IsOptional()
-  @IsEnum(UserObjective)
-  objective?: UserObjective;
+  @IsEnum(['ACCOMMODATION', 'COURSE', 'BOTH'])
+  objective: UserObjective | null;
 
-  @IsOptional()
   @IsDate()
   @Type(() => Date)
-  createdAt?: Date;
+  createdAt: Date;
 
-  @IsOptional()
   @IsDate()
   @Type(() => Date)
-  updatedAt?: Date;
+  updatedAt: Date;
 }
 
 // Partner DTOs
@@ -235,7 +226,7 @@ export class CreatePartnerDto {
   payoutModel?: string;
 }
 
-export class UpdatePartnerDto {
+export class UpdatePartnerDto implements Partial<CreatePartnerDto> {
   @IsOptional()
   @IsString()
   @MinLength(2)
@@ -263,43 +254,6 @@ export class UpdatePartnerDto {
   @IsOptional()
   @IsBoolean()
   isActive?: boolean;
-}
-
-export class PartnerResponseDto extends BaseDto {
-  @IsEnum(PartnerType)
-  type: PartnerType;
-
-  @IsString()
-  name: string;
-
-  @IsOptional()
-  @IsEmail()
-  contactEmail?: string;
-
-  @IsOptional()
-  @IsString()
-  whatsapp?: string;
-
-  @IsOptional()
-  @IsUrl()
-  website?: string;
-
-  @IsOptional()
-  @IsString()
-  payoutModel?: string;
-
-  @IsBoolean()
-  isActive: boolean;
-
-  @IsOptional()
-  @IsDate()
-  @Type(() => Date)
-  createdAt?: Date;
-
-  @IsOptional()
-  @IsDate()
-  @Type(() => Date)
-  updatedAt?: Date;
 }
 
 // Accommodation DTOs
@@ -358,7 +312,7 @@ export class CreateAccommodationDto {
   partnerId?: string;
 }
 
-export class UpdateAccommodationDto {
+export class UpdateAccommodationDto implements Partial<CreateAccommodationDto> {
   @IsOptional()
   @IsString()
   @MinLength(5)
@@ -415,76 +369,6 @@ export class UpdateAccommodationDto {
   @IsOptional()
   @IsUUID()
   partnerId?: string;
-}
-
-export class AccommodationResponseDto extends BaseDto {
-  @IsBoolean()
-  active: boolean;
-
-  @IsEnum(AccommodationType)
-  type: AccommodationType;
-
-  @IsString()
-  title: string;
-
-  @IsString()
-  city: string;
-
-  @IsNumber()
-  priceCad: number;
-
-  @IsString()
-  currency: string;
-
-  @IsOptional()
-  @IsNumber()
-  lat?: number;
-
-  @IsOptional()
-  @IsNumber()
-  lng?: number;
-
-  @IsOptional()
-  @IsString()
-  addressHint?: string;
-
-  @IsOptional()
-  @IsString()
-  rules?: string;
-
-  @IsOptional()
-  @IsString()
-  description?: string;
-
-  @IsOptional()
-  @IsUUID()
-  partnerId?: string;
-
-  @IsOptional()
-  @ValidateNested()
-  @Type(() => PartnerResponseDto)
-  partner?: PartnerResponseDto;
-
-  @IsOptional()
-  @IsNumber()
-  @Min(0)
-  reviewsCount?: number;
-
-  @IsOptional()
-  @IsNumber()
-  @Min(0)
-  @Max(5)
-  averageRating?: number;
-
-  @IsOptional()
-  @IsDate()
-  @Type(() => Date)
-  createdAt?: Date;
-
-  @IsOptional()
-  @IsDate()
-  @Type(() => Date)
-  updatedAt?: Date;
 }
 
 // Course DTOs
@@ -551,7 +435,7 @@ export class CreateCourseDto {
   partnerId?: string;
 }
 
-export class UpdateCourseDto {
+export class UpdateCourseDto implements Partial<CreateCourseDto> {
   @IsOptional()
   @IsString()
   @MinLength(2)
@@ -621,81 +505,6 @@ export class UpdateCourseDto {
   partnerId?: string;
 }
 
-export class CourseResponseDto extends BaseDto {
-  @IsBoolean()
-  active: boolean;
-
-  @IsString()
-  schoolName: string;
-
-  @IsString()
-  programName: string;
-
-  @IsOptional()
-  @IsString()
-  programType?: string;
-
-  @IsString()
-  city: string;
-
-  @IsOptional()
-  @IsNumber()
-  weeklyHours?: number;
-
-  @IsOptional()
-  @IsNumber()
-  durationWeeks?: number;
-
-  @IsOptional()
-  @IsNumber()
-  priceCad?: number;
-
-  @IsString()
-  currency: string;
-
-  @IsOptional()
-  @IsString()
-  visaType?: string;
-
-  @IsOptional()
-  @IsString()
-  rules?: string;
-
-  @IsOptional()
-  @IsString()
-  description?: string;
-
-  @IsOptional()
-  @IsUUID()
-  partnerId?: string;
-
-  @IsOptional()
-  @ValidateNested()
-  @Type(() => PartnerResponseDto)
-  partner?: PartnerResponseDto;
-
-  @IsOptional()
-  @IsNumber()
-  @Min(0)
-  reviewsCount?: number;
-
-  @IsOptional()
-  @IsNumber()
-  @Min(0)
-  @Max(5)
-  averageRating?: number;
-
-  @IsOptional()
-  @IsDate()
-  @Type(() => Date)
-  createdAt?: Date;
-
-  @IsOptional()
-  @IsDate()
-  @Type(() => Date)
-  updatedAt?: Date;
-}
-
 // Review DTOs
 export class CreateReviewDto {
   @IsUUID()
@@ -734,47 +543,6 @@ export class CreateReviewDto {
   @IsString()
   @MaxLength(1000)
   comment?: string;
-}
-
-export class ReviewResponseDto extends BaseDto {
-  @IsUUID()
-  userId: string;
-
-  @IsOptional()
-  @ValidateNested()
-  @Type(() => UserResponseDto)
-  user?: UserResponseDto;
-
-  @IsEnum(ReviewTargetType)
-  targetType: ReviewTargetType;
-
-  @IsOptional()
-  @IsUUID()
-  accommodationId?: string;
-
-  @IsOptional()
-  @IsUUID()
-  courseId?: string;
-
-  @IsOptional()
-  @IsNumber()
-  ratingSafety?: number;
-
-  @IsOptional()
-  @IsNumber()
-  ratingLocation?: number;
-
-  @IsOptional()
-  @IsNumber()
-  ratingExperience?: number;
-
-  @IsOptional()
-  @IsString()
-  comment?: string;
-
-  @IsDate()
-  @Type(() => Date)
-  createdAt: Date;
 }
 
 // Lead DTOs
@@ -816,7 +584,7 @@ export class CreateLeadDto {
   source?: LeadSource;
 }
 
-export class UpdateLeadDto {
+export class UpdateLeadDto implements Partial<CreateLeadDto> {
   @IsOptional()
   @IsEnum(LeadStatus)
   status?: LeadStatus;
@@ -825,49 +593,6 @@ export class UpdateLeadDto {
   @IsString()
   @MaxLength(1000)
   message?: string;
-}
-
-export class LeadResponseDto extends BaseDto {
-  @IsOptional()
-  @IsUUID()
-  userId?: string;
-
-  @IsEnum(LeadType)
-  type: LeadType;
-
-  @IsOptional()
-  @IsUUID()
-  accommodationId?: string;
-
-  @IsOptional()
-  @IsUUID()
-  courseId?: string;
-
-  @IsOptional()
-  @IsUUID()
-  partnerId?: string;
-
-  @IsString()
-  name: string;
-
-  @IsEmail()
-  email: string;
-
-  @IsOptional()
-  @IsString()
-  message?: string;
-
-  @IsOptional()
-  @IsEnum(LeadSource)
-  source?: LeadSource;
-
-  @IsOptional()
-  @IsEnum(LeadStatus)
-  status?: LeadStatus;
-
-  @IsDate()
-  @Type(() => Date)
-  createdAt: Date;
 }
 
 // Copilot DTOs
@@ -919,50 +644,6 @@ export class CreateCopilotSessionDto {
   @IsArray()
   @IsString({ each: true })
   warnings?: string[];
-}
-
-export class CopilotSessionResponseDto extends BaseDto {
-  @IsOptional()
-  @IsUUID()
-  userId?: string;
-
-  @IsString()
-  question: string;
-
-  @IsString()
-  response: string;
-
-  @IsArray()
-  @IsUUID(4, { each: true })
-  recommendedAccommodationIds: string[];
-
-  @IsArray()
-  @IsUUID(4, { each: true })
-  recommendedCourseIds: string[];
-
-  @IsOptional()
-  @IsString()
-  modelName?: string;
-
-  @IsOptional()
-  @IsNumber()
-  latencyMs?: number;
-
-  @IsOptional()
-  @IsEnum(CopilotSource)
-  source?: CopilotSource;
-
-  @IsOptional()
-  @IsString()
-  confidence?: string;
-
-  @IsArray()
-  @IsString({ each: true })
-  warnings: string[];
-
-  @IsDate()
-  @Type(() => Date)
-  createdAt: Date;
 }
 
 // Search DTOs
@@ -1092,19 +773,6 @@ export class RegisterDto {
   @IsOptional()
   @IsEnum(UserObjective)
   objective?: UserObjective;
-}
-
-export class AuthResponseDto {
-  @ValidateNested()
-  @Type(() => UserResponseDto)
-  user: UserResponseDto;
-
-  @IsString()
-  accessToken: string;
-
-  @IsOptional()
-  @IsString()
-  refreshToken?: string;
 }
 
 // Pagination DTOs

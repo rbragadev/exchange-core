@@ -48,12 +48,18 @@ enum PartnerType {
   AGENCY
 }
 
+enum UserRole {
+  USER
+  ADMIN
+  PARTNER
+}
+
 model User {
   id              String        @id @default(cuid())
   email           String        @unique
   name            String?
   bio             String?
-  role            String?       // e.g. "user" | "admin" (RBAC simples no MVP)
+  role            UserRole?     // Using enum instead of String
   badge           String?
   reputationScore Int?          @map("reputation_score")
   isActive        Boolean       @default(true) @map("is_active")

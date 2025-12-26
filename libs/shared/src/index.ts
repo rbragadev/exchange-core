@@ -1,6 +1,3 @@
-// Types
-export * from './lib/types.js';
-
 // Enums
 export * from './lib/enums.js';
 

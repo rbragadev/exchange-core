@@ -1,21 +1,7 @@
-// Base enums from Prisma schema
-export enum UserStatus {
-  STUDENT = 'STUDENT',
-  WORKER = 'WORKER',
-}
+// Re-export Prisma enums to maintain single source of truth
+export { UserStatus, UserPhase, UserObjective, UserRole } from '@prisma/client';
 
-export enum UserPhase {
-  PRE_ARRIVAL = 'PRE_ARRIVAL',
-  FIRST_30_DAYS = 'FIRST_30_DAYS',
-  SETTLED = 'SETTLED',
-}
-
-export enum UserObjective {
-  ACCOMMODATION = 'ACCOMMODATION',
-  COURSE = 'COURSE',
-  BOTH = 'BOTH',
-}
-
+// Base enums that don't exist in Prisma
 export enum AccommodationType {
   HOMESTAY = 'HOMESTAY',
   SHARED = 'SHARED',
@@ -44,12 +30,6 @@ export enum LeadStatus {
   CONTACTED = 'CONTACTED',
   WON = 'WON',
   LOST = 'LOST',
-}
-
-export enum UserRole {
-  USER = 'USER',
-  ADMIN = 'ADMIN',
-  PARTNER = 'PARTNER',
 }
 
 export enum ConfidenceLevel {

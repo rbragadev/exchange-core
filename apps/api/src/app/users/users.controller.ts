@@ -17,17 +17,36 @@ import {
   PaginatedResponseDto,
   ApiResponse,
 } from '@exchange-core/shared';
-import { User } from '@prisma/client';
+
+import { IsPublic, CurrentUser } from '../auth';
+import type { JwtPayload } from '../auth';
 
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   @Post()
+  @IsPublic()
   async create(
     @Body() createUserDto: CreateUserDto,
-  ): Promise<ApiResponse<User>> {
+  ): Promise<ApiResponse<any>> {
     const data = await this.usersService.create(createUserDto);
+    return {
+      success: true,
+      data,
+    };
+  }
+
+  @Get('profile')
+  async getMyProfile(
+    @CurrentUser() user: JwtPayload,
+  ): Promise<ApiResponse<any>> {
+    const data = await this.usersService.findOne(user.sub);
+
+    if (!data) {
+      throw new NotFoundException('User not found');
+    }
+
     return {
       success: true,
       data,
@@ -37,12 +56,12 @@ export class UsersController {
   @Get()
   async findAll(
     @Query() searchDto: SearchDto,
-  ): Promise<PaginatedResponseDto<User>> {
+  ): Promise<PaginatedResponseDto<any>> {
     return this.usersService.findAll(searchDto);
   }
 
   @Get(':id')
-  async findOne(@Param('id') id: string): Promise<ApiResponse<User>> {
+  async findOne(@Param('id') id: string): Promise<ApiResponse<any>> {
     const data = await this.usersService.findOne(id);
 
     if (!data) {
@@ -59,7 +78,7 @@ export class UsersController {
   async update(
     @Param('id') id: string,
     @Body() updateUserDto: UpdateUserDto,
-  ): Promise<ApiResponse<User>> {
+  ): Promise<ApiResponse<any>> {
     const data = await this.usersService.update(id, updateUserDto);
     return {
       success: true,

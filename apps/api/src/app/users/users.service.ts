@@ -1,5 +1,5 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { User, Prisma } from '@prisma/client';
+import { Prisma, User } from '@prisma/client';
 import { PrismaService } from '../../prisma/prisma.service';
 import {
   CreateUserDto,
@@ -7,14 +7,25 @@ import {
   PaginatedResponseDto,
   SearchDto,
 } from '@exchange-core/shared';
+import { AuthService } from '../auth';
 
 @Injectable()
 export class UsersService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly authService: AuthService,
+  ) {}
 
   async create(createUserDto: CreateUserDto): Promise<User> {
+    const hashedPassword = await this.authService.hashPassword(
+      createUserDto.password,
+    );
+
     return await this.prisma.user.create({
-      data: createUserDto,
+      data: {
+        ...createUserDto,
+        password: hashedPassword,
+      },
     });
   }
 
